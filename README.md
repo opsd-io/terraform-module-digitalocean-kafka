@@ -18,7 +18,9 @@ module "example" {
 
   cluster_name     = "example"
   region           = "nyc1"
-  topics           = ["topic1", "topic2"]
+  topics           = {
+    "topic1" = {}
+  }
 }
 
 ```
