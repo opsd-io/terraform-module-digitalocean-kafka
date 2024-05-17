@@ -19,6 +19,7 @@ resource "digitalocean_database_cluster" "main" {
   tags                 = var.tags
   private_network_uuid = var.private_network_uuid
   project_id           = var.project_id
+  storage_size_mib     = var.storage_size_mib
 
   maintenance_window {
     day  = var.maintenance_window_day
