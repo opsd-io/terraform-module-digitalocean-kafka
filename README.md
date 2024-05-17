@@ -4,20 +4,23 @@
   <img alt="OPSdiy - the effortless way of managing cloud infrastructure." src="https://www-opsd-io.s3.eu-central-1.amazonaws.com/OPSdiy/OPSdiy-Medium-lgt-slogan.png" width="700">
 </picture>
 
-# terraform-module-template
+# terraform-module-digitalocean-kafka
 
 ## Introduction
 
-What does the module provide?
+Terraform module to provision DigitalOcean DigitalOcean Managed Kafka.
 
 ## Usage
 
 ```hcl
-module "module_name" {
-  source = "github.com/opsd-io/terraform-module-template?ref=VERSION"
+module "example" {
+  source = "github.com/opsd-io/terraform-module-digitalocean-kafka"
 
-  name = "module-template"
-  size = 9000
+  cluster_name     = "example"
+  region           = "nyc1"
+  topics           = {
+    "topic1" = {}
+  }
 }
 
 ```
@@ -30,12 +33,13 @@ module "module_name" {
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.5.5 |
+| <a name="requirement_digitalocean"></a> [digitalocean](#requirement\_digitalocean) | >= 2.34.1 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_terraform"></a> [terraform](#provider\_terraform) | n/a |
+| <a name="provider_digitalocean"></a> [digitalocean](#provider\_digitalocean) | >= 2.34.1 |
 
 ## Modules
 
@@ -45,23 +49,43 @@ No modules.
 
 | Name | Type |
 |------|------|
-| [terraform_data.main](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/resources/data) | resource |
+| [digitalocean_database_cluster.main](https://registry.terraform.io/providers/digitalocean/digitalocean/latest/docs/resources/database_cluster) | resource |
+| [digitalocean_database_firewall.main](https://registry.terraform.io/providers/digitalocean/digitalocean/latest/docs/resources/database_firewall) | resource |
+| [digitalocean_database_kafka_topic.main](https://registry.terraform.io/providers/digitalocean/digitalocean/latest/docs/resources/database_kafka_topic) | resource |
+| [digitalocean_database_user.main](https://registry.terraform.io/providers/digitalocean/digitalocean/latest/docs/resources/database_user) | resource |
 
 ## Inputs
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_name"></a> [name](#input\_name) | A name for the test resource. | `string` | n/a | yes |
-| <a name="input_parent_id"></a> [parent\_id](#input\_parent\_id) | The ID of the parent resource. Change will trigger a recreation. | `string` | `null` | no |
-| <a name="input_size"></a> [size](#input\_size) | A size for the test resource in MiB. | `number` | `256` | no |
+| <a name="input_allowed_ips"></a> [allowed\_ips](#input\_allowed\_ips) | List of trusted IP addresses associated with the cluster. | `set(string)` | `[]` | no |
+| <a name="input_cluster_name"></a> [cluster\_name](#input\_cluster\_name) | The name of the database cluster. | `string` | n/a | yes |
+| <a name="input_database_users"></a> [database\_users](#input\_database\_users) | A list of the cluster users. | `map(map(string))` | `{}` | no |
+| <a name="input_droplet_size"></a> [droplet\_size](#input\_droplet\_size) | Database Droplet size associated with the cluster. | `string` | `"db-s-2vcpu-2gb"` | no |
+| <a name="input_kafka_version"></a> [kafka\_version](#input\_kafka\_version) | Engine version used by the cluster. | `string` | `"3.7"` | no |
+| <a name="input_maintenance_window_day"></a> [maintenance\_window\_day](#input\_maintenance\_window\_day) | The day of the week on which to apply maintenance updates. | `string` | `"tuesday"` | no |
+| <a name="input_maintenance_window_hour"></a> [maintenance\_window\_hour](#input\_maintenance\_window\_hour) | he hour in UTC at which maintenance updates will be applied in 24 hour format. | `string` | `"23:00"` | no |
+| <a name="input_node_count"></a> [node\_count](#input\_node\_count) | Number of nodes that will be included in the cluster. At least 3. | `number` | `3` | no |
+| <a name="input_private_network_uuid"></a> [private\_network\_uuid](#input\_private\_network\_uuid) | The ID of the VPC where the database cluster will be located. | `string` | `null` | no |
+| <a name="input_project_id"></a> [project\_id](#input\_project\_id) | The ID of the project that the database cluster is assigned to. | `string` | `null` | no |
+| <a name="input_region"></a> [region](#input\_region) | DigitalOcean region where the cluster will reside. | `string` | n/a | yes |
+| <a name="input_storage_size_mib"></a> [storage\_size\_mib](#input\_storage\_size\_mib) | Defines the disk size, in MiB, allocated to the cluster. | `number` | `null` | no |
+| <a name="input_tags"></a> [tags](#input\_tags) | A list of tag names to be applied to the database cluster. | `set(string)` | `[]` | no |
+| <a name="input_topics"></a> [topics](#input\_topics) | A map of Kafka topics to create. | <pre>map(object({<br>    partition_count    = optional(number, 3)<br>    replication_factor = optional(number, 2)<br>    config = optional(object({<br>      cleanup_policy                      = optional(string)<br>      compression_type                    = optional(string)<br>      file_delete_delay_ms                = optional(number)<br>      flush_messages                      = optional(number)<br>      flush_ms                            = optional(number)<br>      index_interval_bytes                = optional(number)<br>      max_compaction_lag_ms               = optional(number)<br>      max_message_bytes                   = optional(number)<br>      message_down_conversion_enable      = optional(bool)<br>      message_format_version              = optional(string)<br>      message_timestamp_difference_max_ms = optional(number)<br>      message_timestamp_type              = optional(string)<br>      min_cleanable_dirty_ratio           = optional(number)<br>      min_insync_replicas                 = optional(number)<br>      preallocate                         = optional(bool)<br>      retention_bytes                     = optional(number)<br>      retention_ms                        = optional(number)<br>      segment_bytes                       = optional(number)<br>      segment_index_bytes                 = optional(number)<br>      segment_jitter_ms                   = optional(number)<br>      segment_ms                          = optional(number)<br>    }), {})<br>  }))</pre> | `{}` | no |
 
 ## Outputs
 
 | Name | Description |
 |------|-------------|
-| <a name="output_byte_size"></a> [byte\_size](#output\_byte\_size) | The size of the resource, in bytes. |
-| <a name="output_full_name"></a> [full\_name](#output\_full\_name) | The full name of the resource. |
-| <a name="output_id"></a> [id](#output\_id) | A string value unique to the resource instance. |
+| <a name="output_database"></a> [database](#output\_database) | Name of the cluster's default database. |
+| <a name="output_firewall_id"></a> [firewall\_id](#output\_firewall\_id) | A unique identifier for the cluster's firewall. |
+| <a name="output_host"></a> [host](#output\_host) | Database cluster's hostname. |
+| <a name="output_id"></a> [id](#output\_id) | The ID of the database cluster. |
+| <a name="output_port"></a> [port](#output\_port) | Network port that the database cluster is listening on. |
+| <a name="output_private_host"></a> [private\_host](#output\_private\_host) | Same as host, but only accessible from resources within the account and in the same region. |
+| <a name="output_private_uri"></a> [private\_uri](#output\_private\_uri) | Same as uri, but only accessible from resources within the account and in the same region. |
+| <a name="output_uri"></a> [uri](#output\_uri) | The full URI for connecting to the database cluster. |
+| <a name="output_urn"></a> [urn](#output\_urn) | The uniform resource name of the database cluster. |
 <!-- END_TF_DOCS -->
 
 ## Examples of usage
