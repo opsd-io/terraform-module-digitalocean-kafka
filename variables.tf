@@ -57,6 +57,12 @@ variable "maintenance_window_hour" {
   default     = "23:00"
 }
 
+variable "storage_size_mib" {
+  description = "Defines the disk size, in MiB, allocated to the cluster."
+  type        = number
+  default     = null
+}
+
 variable "allowed_ips" {
   description = "List of trusted IP addresses associated with the cluster."
   type        = set(string)
