@@ -4,20 +4,21 @@
   <img alt="OPSdiy - the effortless way of managing cloud infrastructure." src="https://www-opsd-io.s3.eu-central-1.amazonaws.com/OPSdiy/OPSdiy-Medium-lgt-slogan.png" width="700">
 </picture>
 
-# terraform-module-template
+# terraform-module-digitalocean-kafka
 
 ## Introduction
 
-What does the module provide?
+Terraform module to provision DigitalOcean DigitalOcean Managed Kafka.
 
 ## Usage
 
 ```hcl
-module "module_name" {
-  source = "github.com/opsd-io/terraform-module-template?ref=VERSION"
+module "example" {
+  source = "github.com/opsd-io/terraform-module-digitalocean-kafka"
 
-  name = "module-template"
-  size = 9000
+  cluster_name     = "example"
+  region           = "nyc1"
+  topics           = ["topic1", "topic2"]
 }
 
 ```
@@ -66,12 +67,23 @@ No modules.
 | <a name="input_private_network_uuid"></a> [private\_network\_uuid](#input\_private\_network\_uuid) | The ID of the VPC where the database cluster will be located. | `string` | `null` | no |
 | <a name="input_project_id"></a> [project\_id](#input\_project\_id) | The ID of the project that the database cluster is assigned to. | `string` | `null` | no |
 | <a name="input_region"></a> [region](#input\_region) | DigitalOcean region where the cluster will reside. | `string` | n/a | yes |
+| <a name="input_storage_size_mib"></a> [storage\_size\_mib](#input\_storage\_size\_mib) | Defines the disk size, in MiB, allocated to the cluster. | `number` | `null` | no |
 | <a name="input_tags"></a> [tags](#input\_tags) | A list of tag names to be applied to the database cluster. | `set(string)` | `[]` | no |
 | <a name="input_topics"></a> [topics](#input\_topics) | A set of Kafka topics to create. | `set(string)` | `[]` | no |
 
 ## Outputs
 
-No outputs.
+| Name | Description |
+|------|-------------|
+| <a name="output_database"></a> [database](#output\_database) | Name of the cluster's default database. |
+| <a name="output_firewall_id"></a> [firewall\_id](#output\_firewall\_id) | A unique identifier for the cluster's firewall. |
+| <a name="output_host"></a> [host](#output\_host) | Database cluster's hostname. |
+| <a name="output_id"></a> [id](#output\_id) | The ID of the database cluster. |
+| <a name="output_port"></a> [port](#output\_port) | Network port that the database cluster is listening on. |
+| <a name="output_private_host"></a> [private\_host](#output\_private\_host) | Same as host, but only accessible from resources within the account and in the same region. |
+| <a name="output_private_uri"></a> [private\_uri](#output\_private\_uri) | Same as uri, but only accessible from resources within the account and in the same region. |
+| <a name="output_uri"></a> [uri](#output\_uri) | The full URI for connecting to the database cluster. |
+| <a name="output_urn"></a> [urn](#output\_urn) | The uniform resource name of the database cluster. |
 <!-- END_TF_DOCS -->
 
 ## Examples of usage
